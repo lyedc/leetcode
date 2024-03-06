@@ -20,7 +20,7 @@ import (
 所以返回 [0, 1]
 */
 
-// 使用哈希表的方式
+// 使用哈希表的方式,map中存储的是列表数据的value和index， for循环list，然后taget-value = 期待的值，从map中找其他的值，然后获取索引
 func twoNumberSum(nums []int, target int) []int  {
 	indexMap := make(map[int]int)
 	for index,value := range nums{

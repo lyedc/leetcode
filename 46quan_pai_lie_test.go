@@ -69,3 +69,40 @@ func Test_permute(t *testing.T) {
 		fmt.Println(p)
 	}
 }
+
+// 实现回溯法的示例
+// backtrace函数用于通过回溯算法找出所有可能的组合
+// 参数nums为给定的数字数组，current为当前组合，result为保存所有组合的结果
+// 通过递归遍历nums，将当前数字加入current，然后继续递归，最后回溯去掉当前数字
+func backtrace(nums []int, current []int, result *[][]int) {
+	// 当current的长度等于nums的长度时，表示找到了一个组合
+	if len(current) == len(nums) {
+		tmp := make([]int, len(nums))
+		copy(tmp, current)
+		*result = append(*result, tmp) // 将当前组合加入结果集
+		return
+	}
+	// 遍历nums
+	for i := 0; i < len(nums); i++ {
+		// 如果当前数字不在current中，则将其加入current并继续递归
+		if !contains(current, nums[i]) {
+			current = append(current, nums[i])
+			backtrace(nums, current, result)
+			// 回溯，移除当前数字
+			current = current[:len(current)-1]
+		}
+	}
+}
+
+// contains函数用于判断一个数字是否在一个数组中
+// 参数nums为要搜索的数组，num为要查找的数字
+// 返回值表示是否找到该数字
+// 这样的方式还是上一个采用hashmap的方式更好一些
+func contains(nums []int, num int) bool {
+	for _, n := range nums {
+		if n == num {
+			return true
+		}
+	}
+	return false
+}

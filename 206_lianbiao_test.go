@@ -17,7 +17,7 @@ Input: 1->2->3->4->5->NULL Output: 5->4->3->2->1->NULL
 
 
 type listNode2 struct {
-	val int
+	val  int
 	next *listNode2
 }
 
@@ -25,10 +25,10 @@ func ReverseLinkeList(head *listNode2)*listNode2  {
 	var pre *listNode2
 	current := head
 	for current != nil{
-		nextTmp := current.next
-		current.next = pre
-		pre = current
-		current = nextTmp
+		nextTemp := current.next // 保存当前节点的下一个节点
+		current.next = pre      // 反转当前节点的指针
+		pre = current           // 更新prev为当前节点
+		current = nextTemp       // 移动到下一个节点
 	}
 	return pre
 }

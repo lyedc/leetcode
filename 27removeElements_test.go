@@ -68,6 +68,29 @@ func RemoveElements2(intList []int, val int)(int, []int)  {
 	return l, intList
 }
 
+
+// 采用替换的方式完成
+// 这个和283 采用同样的方式解决.
+
+func Remove3(nums []int, target int)[]int {
+	index := 0
+	for i :=0; i< len(nums); i++{
+		if nums[i] != target{
+			nums[index] = nums[i]
+			index ++
+		}
+	}
+	return nums[0:index]
+
+}
+
+func TestRemove(t *testing.T) {
+	l2 := []int{0,1,2,2,3,0,4,2}
+	val := 2
+	result := Remove3(l2, val)
+	fmt.Println(result)
+}
+
 func TestRemoveElements(t *testing.T) {
 	l1 := []int{3,2,3,2,3}
 	val := 3

@@ -34,24 +34,24 @@ type NewStack struct {
 	list []string
 }
 
-func ( stack *NewStack)Push( item string)  {
+func (stack *NewStack) Push(item string) {
 	stack.list = append(stack.list, item)
 }
 
-func (stack *NewStack)Pop()string  {
+func (stack *NewStack) Pop() string {
 	v := stack.list[len(stack.list)-1]
-	stack.list = stack.list[:len(stack.list) - 1]
+	stack.list = stack.list[:len(stack.list)-1]
 	return v
 }
 
-func (stack *NewStack)IsEmpty()bool  {
+func (stack *NewStack) IsEmpty() bool {
 	return len(stack.list) == 0
 }
 
-func kuohao(item string)bool  {
+func kuohao(item string) bool {
 	stack := NewStack{[]string{}}
 	list := strings.Split(item, "")
-	for _, value := range list{
+	for _, value := range list {
 		switch value {
 		case "{":
 			stack.Push(value)
@@ -61,19 +61,19 @@ func kuohao(item string)bool  {
 			stack.Push(value)
 		case "}":
 			// 表示匹配上了继续下一个
-			if "{" == stack.Pop(){
+			if "{" == stack.Pop() {
 				continue
 			}
 			// 没有匹配上
 			return false
 		case "]":
-			if "[" == stack.Pop(){
+			if "[" == stack.Pop() {
 				continue
 			}
 			// 没有匹配上
 			return false
 		case ")":
-			if "(" == stack.Pop(){
+			if "(" == stack.Pop() {
 				continue
 			}
 			// 没有匹配上
@@ -81,7 +81,7 @@ func kuohao(item string)bool  {
 		}
 	}
 	// 没有完全匹配
-	if len(stack.list) !=0{
+	if len(stack.list) != 0 {
 		return false
 	}
 	return true

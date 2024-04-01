@@ -161,7 +161,7 @@ nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
 
 */
 
-func threeSum(nums []int) [][]int {
+/* func threeSum(nums []int) [][]int {
 	// sort.Ints(nums)
 	// -1 + -1 + 2 = 0
 	// 1= -1 + 2
@@ -186,10 +186,29 @@ func threeSum(nums []int) [][]int {
 	}
 	return res
 
+} */
+
+func treeNumber(nums []int) [][]int {
+	result := [][]int{}
+	numMap := make(map[int]int)
+
+	for i := 0; i < len(nums); i++ {
+		for j := i + 1; j < len(nums); j++ {
+			target := -(nums[i] + nums[j])
+			if count, ok := numMap[target]; ok && count > 0 {
+				result = append(result, []int{nums[i], nums[j], target})
+				numMap[target]--
+			}
+		}
+		for _, num := range nums[i+1:] {
+			numMap[num]++
+		}
+	}
+	return result
 }
 
 // test
 func TestThreeSum(t *testing.T) {
 	nums := []int{-1, 0, 1, 2, -1, -4}
-	t.Log(threeSum(nums))
+	t.Log(treeNumber(nums))
 }

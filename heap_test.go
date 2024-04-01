@@ -2,6 +2,7 @@ package leetcode
 
 import (
 	"container/heap"
+	"fmt"
 	"testing"
 )
 
@@ -27,110 +28,65 @@ import (
 
 type IntHeap []int
 
-func (h IntHeap) Len() int {
-	return len(h)
-}
-
-func (h IntHeap) Less(i, j int) bool {
-	return h[i] > h[j]
-}
-
-func (h IntHeap) Swap(i, j int) {
-	h[i], h[j] = h[j], h[i]
-}
-
+func (h IntHeap) Len() int           { return len(h) }
+func (h IntHeap) Less(i, j int) bool { return h[i] > h[j] } // 小顶堆
+func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h *IntHeap) Push(v interface{}) {
 	*h = append(*h, v.(int))
 }
-
 func (h *IntHeap) Pop() interface{} {
 	a := *h
-	n := len(a)
-	v := a[n-1]  // 数组中的最后一个
-	*h = a[:n-1]  // 对堆进行重新的赋值操作.
+	v := a[a.Len()-1]
+	*h = a[0 : a.Len()-1]
 	return v
 }
 
-
-func findKthLargest2(nums []int, k int) int {
-	h := IntHeap(nums)
-	heap.Init(&h)  // 初始化一个堆
-	// 构建一个大顶堆
-	for i := 0; i < k; i++ {
-		heap.Push(&h, heap.Pop(&h).(int))
+func findKthLargest5(nums []int, k int) int {
+	tmp := IntHeap(nums)
+	heap.Init(&tmp)
+	for i := 0; i < k-1; i++ {
+		heap.Pop(&tmp)
 	}
-	// 返回对顶元素
-	return heap.Pop(&h).(int)
+	return tmp[0]
 }
 
 // test
-func Test_findKthLargest2(t *testing.T) {
+func TestFindKthLargest5(t *testing.T) {
 	nums := []int{3, 2, 1, 5, 6, 4}
 	k := 2
-	t.Log(findKthLargest2(nums, k))
+	res := findKthLargest5(nums, k)
+	println(res)
+	nums = []int{3, 2, 3, 1, 2, 4, 5, 5, 6}
+	k = 4
+	fmt.Println(findKthLargest5(nums, k)) // 输出: 4
 }
 
-type Heap struct {
-	data []int
-	size int
-}
+// 692 前 K 个高频单词
 
-func NewHeap(n int) *Heap {
-	return &Heap{
-		data: make([]int, n+1),
-		size: 0,
+/*
+给定一个单词列表 words 和一个整数 k ，返回前 k 个出现次数最多的单词。
+
+返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率， 按字典顺序 排序
+*/
+
+/*
+
+ */
+
+func topKFrequent(words []string, k int) []string {
+	tmpMap := make(map[string]int)
+	for _, item := range words {
+		tmpMap[item] += 1
 	}
+	// map 中保存的是每个单词出现的次数
+	fmt.Print(tmpMap)
+	return []string{}
 }
 
+// test
 
-func (h *Heap) Add(v int) {
-	h.data[h.size+1] = v
-	h.size++
-	// 添加元素后，需要调整堆
-	for i := h.size; i > 1; i /= 2 {
-		if h.data[i] > h.data[i/2] {
-			h.data[i], h.data[i/2] = h.data[i/2], h.data[i]
-		} else {
-			break
-		}
-	}
-}
-
-func (h *Heap) Remove() {
-	if h.size == 0 {
-		return
-	}
-	h.data[1], h.data[h.size] = h.data[h.size], h.data[1]
-	h.size--
-	// 删除元素后，需要调整堆
-	for i := 1; i*2 <= h.size; {
-		if h.data[i*2] > h.data[i] {
-			h.data[i], h.data[i*2] = h.data[i*2], h.data[i]
-		}
-	}
-}
-
-func (h *Heap) Peek() int {
-	return h.data[1]
-}
-
-func findKthLargest(nums []int, k int) int {
-	// 创建一个堆
-	h := NewHeap(len(nums))
-	for _, v := range nums {
-		h.Add(v)
-	}
-	for i := 0; i < k-1; i++ {
-		h.Remove()
-	}
-	return h.Peek()
-}
-
-// 692 寻找前K个高频元素
-
-func Test_findKthLargest(t *testing.T) {
-	nums := []int{3, 2, 3, 1, 2, 4, 5, 5, 6}
+func Test_topKFrequent(t *testing.T) {
+	words := []string{"i", "love", "leetcode", "i", "love", "coding"}
 	k := 2
-	t.Log(findKthLargest(nums, k))
-
+	fmt.Println(topKFrequent(words, k))
 }

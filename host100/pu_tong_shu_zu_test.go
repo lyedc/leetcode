@@ -37,14 +37,22 @@ https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo
 */
 
 func maxSubArray(nums []int) int {
+	if len(nums) == 1 {
+		return nums[0]
+	}
 	prefixSum := 0
 	minPrefixSum := 0
+	// 因为已经维护了最小的值为0，如果出现负值的情况况，相减能获取到最大的值
+	// 如果没有负值的情况下，永远是前n项和最大。
 	// maxprefixSum := 0
 	result := math.MinInt
 	for _, num := range nums {
 		prefixSum += num
 		// 计算最小的前缀和。
-
+		// 如果没有判断数组的数量，那么这里就需要放到下面计算，当只有一个数据的时候，就没有最小的计算了。
+		if prefixSum < minPrefixSum {
+			minPrefixSum = prefixSum
+		}
 		// if prefixSum > maxprefixSum {
 		// 	maxprefixSum = prefixSum
 		// }
@@ -55,9 +63,6 @@ func maxSubArray(nums []int) int {
 		// else {
 		// 	result = prefixSum
 		// }
-		if prefixSum < minPrefixSum {
-			minPrefixSum = prefixSum
-		}
 
 	}
 	return result
@@ -77,6 +82,11 @@ func TestPuTongShuZu(t *testing.T) {
 	t.Log(result)
 
 	nums = []int{-1}
+	// 测试结果
+	result = maxSubArray(nums)
+	t.Log(result)
+
+	nums = []int{1, 2, 3, 4, 5}
 	// 测试结果
 	result = maxSubArray(nums)
 	t.Log(result)

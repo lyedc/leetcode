@@ -147,3 +147,52 @@ func TestGetIntersectionNode(t *testing.T) {
 	printList(listB)
 	t.Log(getIntersectionNode(listA, listB))
 }
+
+// leetcode 206 反转链表
+/*
+给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+
+输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+
+输入：head = [1,2]
+输出：[2,1]
+示例 3：
+
+输入：head = []
+输出：[]
+*/
+
+func reverseList(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	var preNode *ListNode
+	current := head
+	for current != nil {
+		tmpNode := current.Next
+		current.Next = preNode
+		preNode = current
+		current = tmpNode
+	}
+
+	return preNode
+}
+
+// 使用递归方式实现
+func reverseListRecursiveDiGui(head *ListNode) *ListNode {
+	if head == nil && head.Next == nil {
+		return nil
+	}
+	p := reverseListRecursiveDiGui(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+	return p
+}
+
+// test
+func TestReverseList(t *testing.T) {
+	list := createList([]int{1, 2, 3, 4, 5})
+	printList(list)
+	printList(reverseList(list))
+}

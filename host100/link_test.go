@@ -196,3 +196,8 @@ func TestReverseList(t *testing.T) {
 	printList(list)
 	printList(reverseList(list))
 }
+
+// leetcode 234 回文链表
+func isPalindrome(head *ListNode) bool {
+	return true
+}

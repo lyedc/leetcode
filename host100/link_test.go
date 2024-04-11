@@ -181,7 +181,7 @@ func reverseList(head *ListNode) *ListNode {
 
 // 使用递归方式实现
 func reverseListRecursiveDiGui(head *ListNode) *ListNode {
-	if head == nil && head.Next == nil {
+	if head == nil || head.Next == nil {
 		return nil
 	}
 	p := reverseListRecursiveDiGui(head.Next)
@@ -198,6 +198,144 @@ func TestReverseList(t *testing.T) {
 }
 
 // leetcode 234 回文链表
+/*
+1. 先使用快慢指针找到链表的中间节点
+2. 反转后半部分的链表
+3. 比较前半部分和后半部分的链表
+4. 恢复链表
+
+*/
 func isPalindrome(head *ListNode) bool {
+	if head == nil&& head.Next == nil{
+		return true
+	}
+	// 使用快慢指针找到链表的中间节点
+	slow, fast := head, head
+	for fast.Next != nil && fast.Next.Next != nil{
+		// 慢指针移动一步
+		// 快指针移动两步
+		// 如果是奇数个节点，快指针会到达最后一个节点
+		// 如果是偶数个节点，快指针会到达倒数第二个节点
+		// 慢指针和快指针相等时，慢指针到达中间节点
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	// 反转后半部分链表
+	reversedSecondHalf := reverseList2(slow.Next)
+	//循环遍历后半部分的链表,和前面进行对比
+	for reversedSecondHalf != nil{
+		if head.Val != reversedSecondHalf.Val{
+			return  false
+		}
+		reversedSecondHalf = reversedSecondHalf.Next
+		head = head.Next
+	}
+	// 还原链表
+	//slow.Next = reverseList2(reversedSecondHalf)
 	return true
+}
+
+func reverseList2(head *ListNode)*ListNode{
+	if head == nil || head.Next == nil{
+		return head
+	}
+	p := reverseList2(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+	return p
+}
+
+// test
+func TestIsPalindrome(t *testing.T) {
+	list := createList([]int{1, 2, 3, 4, 5})
+	printList(list)
+	t.Log(isPalindrome(list))
+	printList(list)
+	list2 := createList([]int{1, 2, 2, 1})
+	printList(list2)
+	t.Log(isPalindrome(list2))
+	printList(list2)
+}
+
+// leetcode 141 环形链表
+
+func hasCycle(head *ListNode) bool{
+	// 表明没有节点
+	if head == nil || head.Next == nil{
+		return false
+	}
+	// 设置快慢指针
+	slow, fast := head, head.Next
+	// 如果两个指针最终没有相遇的话，如果快指针先链表尾部的话，表示没有环形
+	for fast != slow{
+		if fast == nil || fast.Next == nil{
+			return false
+		}
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	return true
+}
+
+
+
+func hasCycle2(head *ListNode) bool{
+	// 表明没有节点
+	if head == nil || head.Next == nil{
+		return false
+	}
+	// 设置快慢指针
+	slow, fast := head, head.Next
+	// 如果两个指针最终没有相遇的话，如果快指针先链表尾部的话，表示没有环形
+	for fast != nil && fast.Next != nil{
+		slow = slow.Next
+		fast = fast.Next.Next
+		if fast == slow{
+			return true
+		}
+	}
+	return false
+}
+
+
+// test
+func TestHasCycle(t *testing.T) {
+	list := createList([]int{1, 2, 3, 4, 5})
+	printList(list)
+	t.Log(hasCycle(list))
+}
+
+// leetcode 142 环形链表 II 返回环的位置
+
+func detectCycle(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return nil
+	}
+
+	slow, fast := head, head
+	loopExists := false
+	// 判断是否存在环形
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+
+		if slow == fast {
+			loopExists = true
+			break
+		}
+	}
+	// 不能存在环形就直接返回
+	if !loopExists {
+		return nil
+	}
+
+	// 快慢指针相遇后，快指针回到链表头部
+	fast = head
+	// 快慢指针以相同速度移动，再次相遇时即为环的入口
+	for slow != fast {
+		slow = slow.Next
+		fast = fast.Next
+	}
+
+	return slow
 }

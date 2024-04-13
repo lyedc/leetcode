@@ -206,12 +206,12 @@ func TestReverseList(t *testing.T) {
 
 */
 func isPalindrome(head *ListNode) bool {
-	if head == nil&& head.Next == nil{
+	if head == nil && head.Next == nil {
 		return true
 	}
 	// 使用快慢指针找到链表的中间节点
 	slow, fast := head, head
-	for fast.Next != nil && fast.Next.Next != nil{
+	for fast.Next != nil && fast.Next.Next != nil {
 		// 慢指针移动一步
 		// 快指针移动两步
 		// 如果是奇数个节点，快指针会到达最后一个节点
@@ -223,9 +223,9 @@ func isPalindrome(head *ListNode) bool {
 	// 反转后半部分链表
 	reversedSecondHalf := reverseList2(slow.Next)
 	//循环遍历后半部分的链表,和前面进行对比
-	for reversedSecondHalf != nil{
-		if head.Val != reversedSecondHalf.Val{
-			return  false
+	for reversedSecondHalf != nil {
+		if head.Val != reversedSecondHalf.Val {
+			return false
 		}
 		reversedSecondHalf = reversedSecondHalf.Next
 		head = head.Next
@@ -235,8 +235,8 @@ func isPalindrome(head *ListNode) bool {
 	return true
 }
 
-func reverseList2(head *ListNode)*ListNode{
-	if head == nil || head.Next == nil{
+func reverseList2(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
 		return head
 	}
 	p := reverseList2(head.Next)
@@ -259,16 +259,16 @@ func TestIsPalindrome(t *testing.T) {
 
 // leetcode 141 环形链表
 
-func hasCycle(head *ListNode) bool{
+func hasCycle(head *ListNode) bool {
 	// 表明没有节点
-	if head == nil || head.Next == nil{
+	if head == nil || head.Next == nil {
 		return false
 	}
 	// 设置快慢指针
 	slow, fast := head, head.Next
 	// 如果两个指针最终没有相遇的话，如果快指针先链表尾部的话，表示没有环形
-	for fast != slow{
-		if fast == nil || fast.Next == nil{
+	for fast != slow {
+		if fast == nil || fast.Next == nil {
 			return false
 		}
 		slow = slow.Next
@@ -277,26 +277,23 @@ func hasCycle(head *ListNode) bool{
 	return true
 }
 
-
-
-func hasCycle2(head *ListNode) bool{
+func hasCycle2(head *ListNode) bool {
 	// 表明没有节点
-	if head == nil || head.Next == nil{
+	if head == nil || head.Next == nil {
 		return false
 	}
 	// 设置快慢指针
 	slow, fast := head, head.Next
 	// 如果两个指针最终没有相遇的话，如果快指针先链表尾部的话，表示没有环形
-	for fast != nil && fast.Next != nil{
+	for fast != nil && fast.Next != nil {
 		slow = slow.Next
 		fast = fast.Next.Next
-		if fast == slow{
+		if fast == slow {
 			return true
 		}
 	}
 	return false
 }
-
 
 // test
 func TestHasCycle(t *testing.T) {
@@ -339,3 +336,328 @@ func detectCycle(head *ListNode) *ListNode {
 
 	return slow
 }
+
+// test
+func TestDetectCycle(t *testing.T) {
+}
+
+// leetcode 21 合并两个有序链表
+/*
+将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+输入：l1 = [1,2,4], l2 = [1,3,4]
+输出：[1,1,2,3,4,4]
+示例 2：
+
+输入：l1 = [], l2 = []
+输出：[]
+示例 3：
+
+输入：l1 = [], l2 = [0]
+输出：[0]
+*/
+/*
+递归： 时间复杂度： o(m +n)
+空间复杂度：O（m + n）
+*/
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	// 采用递归的方式
+	if list1 == nil {
+		return list2
+	}
+	if list2 == nil {
+		return list1
+	}
+	if list1.Val < list2.Val {
+		list1.Next = mergeTwoLists(list1.Next, list2)
+		return list1
+	} else {
+		list2.Next = mergeTwoLists(list1, list2.Next)
+		return list2
+	}
+}
+
+// 迭代法
+/*
+时间复杂度为：n(m +n)
+空间复杂度为：O(1)
+*/
+func mergeTwoLists2(list1 *ListNode, list2 *ListNode) *ListNode {
+	tmp := &ListNode{}
+	// 赋值之后，cur是一直在移动的，这样tmp就是这个链表的整体了。
+	cur := tmp
+	for list1 != nil && list2 != nil {
+		if list1.Val < list2.Val {
+			cur.Next = list1
+			list1 = list1.Next
+		} else {
+			cur.Next = list2
+			list2 = list2.Next
+		}
+		// 移动cur
+		cur = cur.Next
+	}
+	if list1 == nil {
+		cur.Next = list2
+	}
+	if list2 == nil {
+		cur.Next = list1
+	}
+	return tmp.Next
+
+}
+
+// test
+func TestMergeTwoLists(t *testing.T) {
+	// 测试用例
+	list1 := createList([]int{1, 2, 4})
+	list2 := createList([]int{1, 3, 4})
+	printList(mergeTwoLists(list1, list2))
+
+}
+
+// leetcode 2 两数相加
+/*
+给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
+
+请你将两个数相加，并以相同形式返回一个表示和的链表。
+
+你可以假设除了数字 0 之外，这两个数都不会以 0 开头
+
+*/
+/*
+
+时间复杂度：O(max(m,n))
+空间复杂度：O(1）
+*/
+
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	result := &ListNode{}
+	tmp := result
+	next := 0
+	// 这里需要计算next ！=0 的情况。
+	for l1 != nil || l2 != nil || next != 0 {
+		total := next
+		if l1 != nil {
+			total += l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			total += l2.Val
+			l2 = l2.Next
+		}
+		tmp.Next = &ListNode{Val: total % 10}
+		tmp = tmp.Next
+		next = total / 10
+	}
+	return result.Next
+}
+
+// leetcode 19 删除链表的倒数第 N 个结点
+/*
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点
+*/
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	result := &ListNode{Next: head}
+	fast, slow := result, result
+	// 计算长度。得出前N个数据的位置
+	for i := 0; i < n; i++ {
+		fast = fast.Next
+	}
+	// fast 移动到尾部的时候，slow刚好是N节点的前一个数据，因为多了个头部需要fast多走一步，slow少走一步
+	// 这样刚好计算出倒数第N个节点的前一个节点
+	for fast.Next != nil {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	slow.Next = slow.Next.Next
+	return result.Next
+}
+
+// test
+
+func TestRemoveNthFromEnd(t *testing.T) {
+	list := createList([]int{1, 2, 3, 4, 5})
+	printList(removeNthFromEnd(list, 2))
+}
+
+// leetcode 24 两两交换链表中的节点
+
+/*
+给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。
+你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）
+
+输入：head = [1,2,3,4]
+输出：[2,1,4,3]
+示例 2：
+
+输入：head = []
+输出：[]
+示例 3：
+
+输入：head = [1]
+输出：[1]
+
+// 一对一对的进行处理，先处理第一对，然后再处理下一对，直到处理完毕。
+
+*/
+
+func swapPairs(head *ListNode) *ListNode {
+	result := &ListNode{Next: head}
+	cur := result
+	for head != nil && head.Next != nil {
+		// 保存下一个节点
+		next := head.Next
+		cur.Next = next
+		// 交换当前节点到下一个节点
+		// 对前两个节点进行交换
+		head.Next = next.Next
+		next.Next = head
+		// 相当于是: 0-1-2-3-4
+		// 0-1-2 变成： 0-2-1-3-4
+		// 1-3-4： 0-2-1-4-3
+		// 移动到下一对节点
+		cur = head
+		head = head.Next
+	}
+	return result.Next
+}
+
+// leetcode 138 复制带随机指针的链表
+
+// leetcode 148 排序链表
+/*
+
+采用归并排序的方式，把链表从中间分开，分别排序，然后递归。。。
+最后采用合并两个有序链表的方式合并链表。
+
+
+*/
+
+func sortListNode(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	// 找到中间节点， 一个走一步，一个走两步这样slow就是中间节点。
+	slow, fast := head, head
+	for fast.Next != nil && fast.Next.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	// slow 就是中间节点
+	// 排序中间节点的右边
+	right := sortListNode(slow.Next)
+	// 断开中间节点
+	slow.Next = nil
+	// 排序中间节点的左边
+	left := sortListNode(head)
+	// 合并两个有序链表
+	return mergeTwoLists2(left, right)
+}
+
+// test
+
+func TestSortListNode(t *testing.T) {
+	list := createList([]int{4, 2, 1, 3})
+	printList(sortListNode(list))
+}
+
+// leetcode 146 LRU 缓存机制
+
+/*
+请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
+实现 LRUCache 类：
+LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
+int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
+void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
+函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
+*/
+
+type DlinkedMode struct {
+	Key   int
+	Value int
+	Prev  *DlinkedMode
+	Next  *DlinkedMode
+}
+
+type LRUCache struct {
+	// 容量
+	capacity int
+	// 缓存数据
+	hashMap map[int]*DlinkedMode
+	// 缓存数据个数
+	head *DlinkedMode
+	tail *DlinkedMode
+}
+
+func Constructor(capacity int) LRUCache {
+	head := &DlinkedMode{}
+	tail := &DlinkedMode{}
+	head.Next = tail
+	tail.Prev = head
+	return LRUCache{
+		capacity: capacity,
+		hashMap:  make(map[int]*DlinkedMode),
+		head:     head,
+		tail:     tail,
+	}
+}
+
+func (this *LRUCache) Get(key int) int {
+	if node, ok := this.hashMap[key]; ok {
+		this.moveToHead(node)
+		return node.Value
+	}
+	return -1
+}
+
+func (this *LRUCache) Put(key int, value int) {
+	// 存在这个key，就更新之，并放到最前面去
+	if node, ok := this.hashMap[key]; ok {
+		node.Value = value
+		this.moveToHead(node)
+		return
+	}
+	// 没有的话，就创建一个新的节点，并放入到最前面去
+	newNode := &DlinkedMode{Key: key, Value: value}
+	this.hashMap[key] = newNode
+	this.addToHead(newNode)
+	// 判读是否满了。
+	if len(this.hashMap) > this.capacity {
+		// 删除后面的数据
+		removed := this.removeTail()
+		delete(this.hashMap, removed.Key)
+	}
+
+}
+
+func (this *LRUCache) addToHead(node *DlinkedMode) {
+	node.Prev = this.head
+	node.Next = this.head.Next
+	this.head.Next.Prev = node
+	this.head.Next = node
+}
+
+func (this *LRUCache) removeNode(node *DlinkedMode) {
+	node.Prev.Next = node.Next
+	node.Next.Prev = node.Prev
+}
+
+func (this *LRUCache) moveToHead(node *DlinkedMode) {
+	this.removeNode(node)
+	this.addToHead(node)
+}
+
+func (this *LRUCache) removeTail() *DlinkedMode {
+	node := this.tail.Prev
+	this.removeNode(node)
+	// 这里需要把这个node返回回去，如果不返回回去，后面删除的时候，会报错。
+	return node
+}
+
+// func copyRandomList(head *Node) *Node {}
+/*
+
+链表总结：
+当时找数据的时候：需要有一个空的头部节点
+*/

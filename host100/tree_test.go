@@ -90,3 +90,82 @@ func isMirror(left, right *TreeNode) bool {
 	// 递归。。。
 	return isMirror(left.Left, right.Right) && isMirror(left.Right, right.Left)
 }
+
+// leetcode 102 二叉树的层次遍历
+func LevelOrder(root *TreeNode) [][]int {
+	result := [][]int{}
+	if root == nil {
+		return result
+	}
+	var levelOrder func(node *TreeNode, level int)
+	levelOrder = func(node *TreeNode, level int){
+		if node == nil{
+			return
+		}
+		// 如果是一个新的层级,就创建一个数组...
+		if len(result) == level{
+			result = append(result, []int{})
+		}
+		// 一个层级一个数组,并把层级的值加入到数组中.
+		result[level] = append(result[level], node.Val)
+		levelOrder(node.Left, level +1)
+		levelOrder(node.Right,level +1)
+	}
+	levelOrder(root, 0)
+	return result
+}
+
+// levelOrder 使用队列进行层次遍历
+func levelOrder2(root *TreeNode) [][]int {
+	if root == nil {
+		return [][]int{}
+	}
+	var result [][]int
+	var queue []*TreeNode
+	queue = append(queue, root)
+
+	for len(queue) > 0 {
+		levelSize := len(queue)
+		level := make([]int, levelSize)
+
+		for i := 0; i < levelSize; i++ {
+			node := queue[0]
+			// 永远取出队列最上面的叶子节点.
+			queue = queue[1:]
+			level[i] = node.Val
+
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		result = append(result, level)
+	}
+	return result
+}
+
+// leetcode 108 将有序数组转换为二叉搜索树
+/*
+要将一个有序数组转换为二叉搜索树，我们可以使用以下步骤：
+
+选择数组中间的元素作为根节点。
+将数组分为两部分，左边的元素都小于根节点的值，右边的元素都大于根节点的值。
+递归地创建左子树和右子树。
+*/
+func SortedArrayToBST(nums []int) *TreeNode {
+	if len(nums) == 0{
+		return nil
+	}
+	mid := len(nums) / 2
+	root := &TreeNode{Val: nums[mid]}
+	root.Left = SortedArrayToBST(nums[:mid])
+	root.Right = SortedArrayToBST(nums[mid+1:])
+	return root
+}
+
+// leetcode 98 验证二叉搜索树
+func isValidBST(root *TreeNode) bool {
+
+}

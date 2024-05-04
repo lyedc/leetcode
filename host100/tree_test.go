@@ -262,3 +262,91 @@ func kthSmallest2(root *TreeNode, k int) int {
 	// 表示没有最小的元素
 	return 0
 }
+
+// leetcode  199 二叉树的右视图
+// 使用广度优先算法 bfs进行层次遍历,保留最后一个节点即可
+/*
+在这个Go语言实现中，我们同样使用了一个切片queue来模拟队列，
+用于存储每一层的节点。在每一层的开始，
+我们先计算出这一层的节点数量levelLength，
+然后遍历这些节点，将它们的子节点加入队列中。
+对于每一层，我们只保留最后一个节点的值，这就是右视图中的一个节点
+*/
+func rightSideView(root *TreeNode) []int {
+	if root == nil{
+		return nil
+	}
+	var result []int
+	// 使用队列进行bfs广度优先遍历
+	queue := []*TreeNode{root}
+	for len(queue) >0{
+		// 第一次表示是第一层,第一层就一个节点.遍历完第一层后,就会把第一层的叶子节点加入到队列中.
+		leveLength := len(queue)
+		for i := 0; i < leveLength; i++ {
+			// 队列是先进先出,弹出队列最前面的节点.第一次弹出的左边的节点,
+			//最后一个弹出的是右边的节点.
+			// 比如第二个节点,第一次弹出的是左边的节点,第二次弹出的是右边的节点.
+			node := queue[0]
+			queue = queue[1:]
+			// 如果是当前层的最后一个节点,就加入到结果中
+			if i == leveLength-1{
+				result = append(result, node.Val)
+			}
+			// 加入第一层的叶子节点,
+			if node.Left != nil{
+				queue = append(queue,node)
+			}
+			if node.Right != nil{
+				queue = append(queue, node.Right)
+			}
+
+		}
+
+	}
+	return result
+}
+
+// leetcode 114 二叉树展开为链表
+/*
+先前序遍历排好序
+然后把节点连接起来,原有的tree的left都为nil,右边的逐个链接起来.
+*/
+func flatten(root *TreeNode) {
+	list := treeqianxu(root)
+	for i := 1; i< len(list); i++{
+		pre, cur := list[i -1], list[i]
+		pre.Left, pre.Right = nil, cur
+	}
+}
+
+func treeqianxu(root *TreeNode)[]*TreeNode{
+	if root == nil{
+		return nil
+	}
+	var result []*TreeNode
+	result = append(result, root)
+	result = append(result, treeqianxu(root.Left)...)
+	result = append(result, treeqianxu(root.Right)...)
+	return result
+}
+
+// 通过前驱节点逐步的链接,画图比较容易理解.
+
+func flatten2(root *TreeNode)  {
+	curr := root
+	for curr != nil {
+		if curr.Left != nil {
+			next := curr.Left
+			predecessor := next
+			// 找到左子树最右边的节点找到最右一个.
+			for predecessor.Right != nil {
+				predecessor = predecessor.Right
+			}
+			// 把左边的最右节点的right的值,替换为 root的right.
+			predecessor.Right = curr.Right
+			curr.Left, curr.Right = nil, next
+		}
+		// 逐步的获取每个节点的右节点作为当前节点.继续下一个节点的判断.
+		curr = curr.Right
+	}
+}

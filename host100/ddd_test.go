@@ -22,7 +22,9 @@ func partition2(arr []int, left, right int)int{
 	tmp := arr[right]
 	i := left
 	for j := left; j < right; j++{
-		if arr[j] < tmp{
+		// 小于基准值的放在左边边，大于基准值的放在右边。当大于基准值的时候，这个值得位置不变，并且i也不变，
+		// 所以最后循环完后，i就是新的基准值的位置。
+		if arr[j] > tmp{
 			arr[i], arr[j] = arr[j], arr[i]
 			i ++
 		}

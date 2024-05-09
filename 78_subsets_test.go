@@ -37,29 +37,29 @@ import (
 
 */
 
-func Subsets(nums []int)[][]int  {
+func Subsets(nums []int) [][]int {
 	var result [][]int
 	var current []int
-	sort.Ints(nums)  // 现对数组进行排序,保证重复元素相邻
+	sort.Ints(nums) // 现对数组进行排序,保证重复元素相邻
 	backtrackSubetes(nums, 0, current, &result)
 	return result
 }
 
-func backtrackSubetes(num []int, index int, current []int, result *[][]int){
+func backtrackSubetes(num []int, index int, current []int, result *[][]int) {
 	// 把当前子集加入到结果集中
 	tmp := make([]int, len(current))
 	copy(tmp, current)
 	*result = append(*result, tmp)
-	for i := index; i < len(num);i++{
+	for i := index; i < len(num); i++ {
 		// 跳过重复元素,避免生成重复的子集
 		// 下一个元素和上一个元素相同的话,就不用再进行循环,因为不能有重复的元素
-		if i>index && num[i] == num[i-1]{
+		if i > index && num[i] == num[i-1] {
 			continue
 		}
 		current = append(current, num[i])
 		backtrackSubetes(num, i+1, current, result)
 		// 回溯(满足了就往上回溯..只要满足就回溯)
-		current = current[:len(current) - 1]
+		current = current[:len(current)-1]
 	}
 }
 
@@ -67,10 +67,10 @@ func kuo_zhan_fa(nums []int) [][]int {
 	var current []int
 	var result [][]int
 	result = append(result, current)
-	for _, item := range nums{
+	for _, item := range nums {
 		tmpResult := [][]int{}
 		// 遍历每个结果集中的数据,把当前的数字加入到之前的结果中.
-		for _, dd := range result{
+		for _, dd := range result {
 			tmp := dd
 			tmp = append(tmp, item)
 			tmpResult = append(tmpResult, tmp)
@@ -82,10 +82,9 @@ func kuo_zhan_fa(nums []int) [][]int {
 }
 
 // 深度优先算法
-func dfs()  {
-	
-}
+func dfs() {
 
+}
 
 func TestSubsets(t *testing.T) {
 	nums := []int{1, 2, 2}
@@ -95,7 +94,7 @@ func TestSubsets(t *testing.T) {
 	}
 	fmt.Println("===================")
 	subsetsResult2 := kuo_zhan_fa(nums)
-	for _, item := range subsetsResult2{
+	for _, item := range subsetsResult2 {
 		fmt.Println(item)
 	}
 }

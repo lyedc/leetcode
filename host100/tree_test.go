@@ -98,18 +98,18 @@ func LevelOrder(root *TreeNode) [][]int {
 		return result
 	}
 	var levelOrder func(node *TreeNode, level int)
-	levelOrder = func(node *TreeNode, level int){
-		if node == nil{
+	levelOrder = func(node *TreeNode, level int) {
+		if node == nil {
 			return
 		}
 		// 如果是一个新的层级,就创建一个数组...
-		if len(result) == level{
+		if len(result) == level {
 			result = append(result, []int{})
 		}
 		// 一个层级一个数组,并把层级的值加入到数组中.
 		result[level] = append(result[level], node.Val)
-		levelOrder(node.Left, level +1)
-		levelOrder(node.Right,level +1)
+		levelOrder(node.Left, level+1)
+		levelOrder(node.Right, level+1)
 	}
 	levelOrder(root, 0)
 	return result
@@ -147,6 +147,7 @@ func levelOrder2(root *TreeNode) [][]int {
 }
 
 // leetcode 108 将有序数组转换为二叉搜索树
+// 搜索二叉树的定义: 左子树的所有节点的值都小于根节点的值，右子树的所有节点的值都大于根节点的值。
 /*
 要将一个有序数组转换为二叉搜索树，我们可以使用以下步骤：
 
@@ -155,7 +156,7 @@ func levelOrder2(root *TreeNode) [][]int {
 递归地创建左子树和右子树。
 */
 func SortedArrayToBST(nums []int) *TreeNode {
-	if len(nums) == 0{
+	if len(nums) == 0 {
 		return nil
 	}
 	mid := len(nums) / 2
@@ -165,11 +166,102 @@ func SortedArrayToBST(nums []int) *TreeNode {
 	return root
 }
 
-// leetcode 98 验证二叉搜索树
-func isValidBST(root *TreeNode) bool {
-return false
+// leetcode 98 验证搜索二叉树
+func IsValidBST(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	return helper(root, nil, nil)
 }
 
+func helper(root *TreeNode, min, max *int) bool {
+	if root == nil {
+		return true
+	}
+	if min != nil && root.Val <= *min {
+		return false
+	}
+	if max != nil && root.Val >= *max {
+		return false
+	}
+	// 这里不能直接的传入nil， 一定要根节点的，根节点传入到递归函数中，所以这里应该是min和max
+	if !helper(root.Left, min, &root.Val) {
+		return false
+	}
+	if !helper(root.Right, &root.Val, max) {
+		return false
+	}
+	return true
+}
+
+func isValidBST2(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	return isValidBSTHelper(root, nil, nil)
+}
+
+func isValidBSTHelper(node *TreeNode, lower, upper *int) bool {
+	if node == nil {
+		return true
+	}
+	if lower != nil && node.Val <= *lower {
+		return false
+	}
+	if upper != nil && node.Val >= *upper {
+		return false
+	}
+	if !isValidBSTHelper(node.Left, lower, &node.Val) {
+		return false
+	}
+	if !isValidBSTHelper(node.Right, &node.Val, upper) {
+		return false
+	}
+	return true
+}
+
+// leetcode 230 二叉搜索树中第K小的元素
+func kthSmallest(root *TreeNode, k int) int {
+	var res int
+	var inorder func(node *TreeNode)
+	inorder = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		inorder(node.Left)
+		k--
+		if k == 0 {
+			res = node.Val
+			return
+		}
+		inorder(node.Right)
+	}
+	inorder(root)
+	return res
+}
+
+// 使用栈的方式完成
+func kthSmallest2(root *TreeNode, k int) int {
+	stack := []*TreeNode{}
+	count := 0
+	for root != nil || len(stack) > 0 {
+		for root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		}
+		// 弹出栈顶的数据就是树的左子树的小值
+		root = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		count++
+		if count == k {
+			return root.Val
+		}
+		// 判断最后的左子树的右边的值，走到这里表示最小的最子树不满足，需要判断右边的数据。
+		root = root.Right
+	}
+	// 表示没有最小的元素
+	return 0
+}
 
 // leetcode  199 二叉树的右视图
 // 使用广度优先算法 bfs进行层次遍历,保留最后一个节点即可
@@ -258,5 +350,3 @@ func flatten2(root *TreeNode)  {
 		curr = curr.Right
 	}
 }
-
-

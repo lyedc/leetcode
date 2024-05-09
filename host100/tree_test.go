@@ -258,3 +258,5 @@ func flatten2(root *TreeNode)  {
 		curr = curr.Right
 	}
 }
+
+

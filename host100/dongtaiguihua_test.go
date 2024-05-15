@@ -8,21 +8,21 @@ import (
 
 // leetcode 打家劫舍
 func rob(nums []int) int {
-	if len(nums) == 0{
+	if len(nums) == 0 {
 		return 0
 	}
-	if len(nums) == 1{
+	if len(nums) == 1 {
 		return nums[0]
 	}
 	dp := make([]int, len(nums))
 	dp[0] = nums[0]
 	dp[1] = max(nums[0], nums[1])
-	for i := 2; i<len(nums); i++{
+	for i := 2; i < len(nums); i++ {
 		// // 抢当前房子或不抢当前房子,如果抢了当前房子就只能获取到dp[i -2] + 当前房子中的金额
 		// 如果不抢当前房子那么就直接获取dp[i-1]
 		// 所以获取两种情况的最大值就可以了。
 
-		dp[i] = max(dp[i-1], dp[i-2]+ nums[i])
+		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
 	}
 	return dp[len(nums)-1]
 }
@@ -30,16 +30,16 @@ func rob(nums []int) int {
 // leetcode  完全平方数 使用go 语言实现，并给出详细的解释
 func numSquares(n int) int {
 	dp := make([]int, n+1)
-	for i := 1; i<n;i++{
-		dp[i] = n +1
+	for i := 1; i < n; i++ {
+		dp[i] = n + 1
 	}
 	dp[0] = 0
-	for i := 1; i<n; i++{
-		for j :=1; j< i ; j++{
-			if j*j <i{
+	for i := 1; i < n; i++ {
+		for j := 1; j < i; j++ {
+			if j*j < i {
 				// i - j*j 表示的是通过j*j的平方后，还需要多少中组合才能完成数据的组成
 				// +1 表示的是加上 j*j的这种方案。
-				dp[i] = min(dp[i], dp[i-j*j] +1)
+				dp[i] = min(dp[i], dp[i-j*j]+1)
 			}
 		}
 	}
@@ -62,26 +62,24 @@ func coinChange(coins []int, amount int) int {
 	// 表示0 金额的组成方式只有0个硬币
 	dp[0] = 0
 	// 循环要兑换的金额
-	for i := 1; i< amount; i++{
+	for i := 1; i < amount; i++ {
 		// 循环每种金额需要多少硬币才能兑换
-		for j :=0 ; j<len(coins); j ++{
-			if coins[j] <= i{
+		for j := 0; j < len(coins); j++ {
+			if coins[j] <= i {
 				// dp[i-coins[j] +1] 表示使用了con[j]个硬币后，还需要多少的硬币采可以组成指定的金额
 				// +1 表示的是 coins[j]这个硬币(这个组成是需要加入到总的组成数中的。)
-				dp[i] = min(dp[i], dp[i-coins[j] +1])
+				dp[i] = min(dp[i], dp[i-coins[j]+1])
 			}
 		}
 	}
 	// 表示无法组成指定的金额，返回-1
 	// 没有办法组成指定的金额的话，dp中的值就不会被更新
-	if dp[amount] == math.MaxInt32{
+	if dp[amount] == math.MaxInt32 {
 		return -1
 	}
 	// 否则就返回指金额的组成部分
 	return dp[amount]
 }
-
-
 
 // leetcode 单词拆分 使用go 语言实现，并给出解释
 func wordBreak(s string, wordDict []string) bool {
@@ -104,6 +102,7 @@ func wordBreak(s string, wordDict []string) bool {
 			// 如果前 j 个字符可以拆分，并且 s[j:i] 是字典中的单词，则更新 dp[i]
 			// 前j个字符被拆分成了s[:j]和s[j:i]，且s[j:i]是字典中的单词，所以dp[i]为true
 			// 因为只要有一个符合要求的拆分，就可以认为整个字符串可以拆分，所以dp[i]为true
+			// dp[j]表示前j个字符是可以拆分的，然后j:i之间还可以拆分，那么表示i前面的字符串都可以拆分
 			if dp[j] && wordSet[s[j:i]] {
 				dp[i] = true
 				break
@@ -115,8 +114,15 @@ func wordBreak(s string, wordDict []string) bool {
 	return dp[len(s)]
 }
 
-
 // leetcode 最长递增子序列 使用go 语言实现，并给出解释
+/*
+给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+
+子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的
+子序列
+。
+
+*/
 func lengthOfLIS(nums []int) int {
 	// 创建一个长度为 len(nums) 的切片 dp，用于存储以 nums[i] 结尾的最长递增子序列的长度
 	// 初始值都设为 1，因为每个数字本身就是一个长度为 1 的递增子序列
@@ -154,18 +160,17 @@ func lengthOfLIS(nums []int) int {
 	return maxLength
 }
 
-func TestLength(t *testing.T){
+func TestLength(t *testing.T) {
 	nums := []int{10, 9, 2, 5, 3, 7, 101, 18}
 	fmt.Printf("The length of the longest increasing subsequence is %d\n", lengthOfLIS(nums))
 }
 
-
-//leetcode 152 乘积最大子数组
+// leetcode 152 乘积最大子数组
 func maxProduct(nums []int) int {
-	max ,min, maxproduct := nums[0], nums[0], nums[0]
-	for i :=1 ; i < len(nums); i++{
+	max, min, maxproduct := nums[0], nums[0], nums[0]
+	for i := 1; i < len(nums); i++ {
 		// 这里需要考虑如果是负数的时候，最小就变成了最大值了，最大值就变成最小值了。
-		if nums[i] < 0{
+		if nums[i] < 0 {
 			max, min = min, max
 		}
 		newMax := max * nums[i]
@@ -174,7 +179,7 @@ func maxProduct(nums []int) int {
 		min = int(math.Min(float64(newMin), float64(nums[i])))
 		maxproduct = int(math.Max(float64(maxproduct), float64(max)))
 	}
- 	return maxproduct
+	return maxproduct
 }
 
 // leetcode 416 分割等和子集
@@ -186,11 +191,11 @@ func maxProduct(nums []int) int {
 func canPartition(nums []int) bool {
 	sum := 0
 	// 先计算数组的总和
-	for i :=0; i<len(nums); i++{
+	for i := 0; i < len(nums); i++ {
 		sum += nums[i]
 	}
 	// 如果数组的综合是一个奇数 则不可能分割成两个相等的子集
-	if sum % 2 != 0{
+	if sum%2 != 0 {
 		return false
 	}
 	target := sum / 2
@@ -202,7 +207,7 @@ func canPartition(nums []int) bool {
 	// 遍历数组中的每个元素
 	for i := 0; i < len(nums); i++ {
 		// 遍历每个目标值
-		for j := target; j >= nums[i]; j--{
+		for j := target; j >= nums[i]; j-- {
 			// 如果当前元素可以加入到子集，则更新dp[j]为true
 			//  dp[j-nums[i]] 表示的是dp[j-nums[i]]为true，表示可以找到一个子集，并且这个子集的和为j-nums[i]
 			// 后面的表示 j-nums[i]剩下和是否存在一个这样的子集，也就是计算了每个dp的可能性。

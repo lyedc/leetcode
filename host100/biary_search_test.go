@@ -7,16 +7,16 @@ package host100
 请必须使用时间复杂度为 O(log n) 的算法。
 */
 func searchInsert(nums []int, target int) int {
-	start,end := 0, len(nums)-1
-	for start <= end{
-		mid := start + (end - start)/2
+	start, end := 0, len(nums)-1
+	for start <= end {
+		mid := start + (end-start)/2
 		if nums[mid] == target {
 			return mid
 		}
-		if nums[mid] < target{
-			start = mid +1
-		}else {
-			end = mid -1
+		if nums[mid] < target {
+			start = mid + 1
+		} else {
+			end = mid - 1
 		}
 	}
 	return start
@@ -27,16 +27,16 @@ func searchMatrix(matrix [][]int, target int) bool {
 	// m 表示多少行，n表示多少列。
 	m, n := len(matrix), len(matrix[0])
 	start, end := 0, m*n-1
-	for start <= end{
-		mid := start + (end -start)/2
+	for start <= end {
+		mid := start + (end-start)/2
 		// 根据中间值，计算出对应的行和列
 		cow, rol := mid/n, mid%n
-		if matrix[cow][rol] == target{
+		if matrix[cow][rol] == target {
 			return true
 		}
-		if matrix[cow][rol] < target{
+		if matrix[cow][rol] < target {
 			start = mid + 1
-		}else{
+		} else {
 			end = mid - 1
 		}
 	}
@@ -53,16 +53,17 @@ func searchMatrix(matrix [][]int, target int) bool {
 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题
 */
 func searchRange(nums []int, target int) []int {
-	start,end := 0, len(nums)-1
-	for start <= end{
-		mid := start + (end - start)/2
-		if nums[mid] == target{
-			left,right := mid,mid
-			for left >= 0 && nums[left] == target{
+	start, end := 0, len(nums)-1
+	for start <= end {
+		mid := start + (end-start)/2
+		if nums[mid] == target {
+			left, right := mid, mid
+			for left >= 0 && nums[left] == target {
 				left--
 			}
-			for right < len(nums) && nums[right] == target{
+			for right < len(nums) && nums[right] == target {
 			}
 		}
 	}
+	return nil
 }

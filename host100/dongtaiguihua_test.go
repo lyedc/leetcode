@@ -201,6 +201,7 @@ func canPartition(nums []int) bool {
 	target := sum / 2
 	// target 是我们要找到的目标子数组的和
 	// 创建一个长度为target+1的数组，用于存储每个目标值是否可以找到一个子集
+	//dp[i]表示可以用数组中的元素凑出i
 	dp := make([]bool, target+1)
 	// 初始化dp数组，将dp[0]设为true，表示空集可以找到一个子集
 	dp[0] = true
@@ -209,10 +210,17 @@ func canPartition(nums []int) bool {
 		// 遍历每个目标值
 		for j := target; j >= nums[i]; j-- {
 			// 如果当前元素可以加入到子集，则更新dp[j]为true
-			//  dp[j-nums[i]] 表示的是dp[j-nums[i]]为true，表示可以找到一个子集，并且这个子集的和为j-nums[i]
+			// dp[j-nums[i]] 表示的是dp[j-nums[i]]为true，表示可以找到一个子集，并且这个子集的和为j-nums[i]
 			// 后面的表示 j-nums[i]剩下和是否存在一个这样的子集，也就是计算了每个dp的可能性。
 			dp[j] = dp[j] || dp[j-nums[i]]
+			fmt.Println(j)
+			fmt.Println(dp[j])
 		}
 	}
 	return dp[target]
+}
+
+func TestMap(t *testing.T) {
+	num := []int{1, 5, 11, 5}
+	fmt.Print(canPartition(num))
 }

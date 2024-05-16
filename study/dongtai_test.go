@@ -1,6 +1,7 @@
 package study
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -95,7 +96,51 @@ func zuichangdizeng(num []int) int {
 	for i := 0; i < len(num); i++ {
 		dp[i] = 1
 	}
-	dp[0] = 0
+
+	for i := 1; i < len(num); i++ {
+		for j := 0; j < i; j++ {
+			if num[j] < num[i] {
+				dp[i] = max(dp[i], dp[j]+1)
+			}
+		}
+	}
+	result := 0
+	for _, item := range dp {
+		result = max(result, item)
+	}
+	return result
+}
+
+// 最大乘积子数组
+func maxchenji(num []int) int {
+	tmpMax, tmpMin, tmpResult := num[0], num[0], num[0]
+	for i := 1; i < len(num); i++ {
+		if num[i] < 0 {
+			tmpMax, tmpMin = tmpMin, tmpMax
+		}
+		newMax := tmpMax * num[i]
+		newMin := tmpMin * num[i]
+		tmpMax = max(newMax, num[i])
+		tmpMin = min(newMin, num[i])
+		tmpResult = max(tmpResult, tmpMax)
+	}
+	return tmpResult
+
+}
+
+// genlidengheziji
+func fengedenghezijie(num []int) {
+	sum := 0
+	for _, item := range num {
+		sum += item
+	}
+	// 奇数是不能等和分割的。
+	if sum%2 != 0 {
+		return
+	}
+	// 求取一般数据的和
+	target := sum / 2
+	fmt.Print(target)
 
 }
 

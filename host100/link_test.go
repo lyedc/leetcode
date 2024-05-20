@@ -434,7 +434,8 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	result := &ListNode{}
 	tmp := result
 	next := 0
-	// 这里需要计算next ！=0 的情况。
+	// 这里需要计算next ！=0 的情况。，这个next的判断是为了最后一位的进位计算的。，防止丢失，如果等于0的话
+	// 表示链表刚好等于原来的长度，如果不等于0，链表就要增加一个节点。
 	for l1 != nil || l2 != nil || next != 0 {
 		total := next
 		if l1 != nil {
@@ -465,6 +466,7 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	}
 	// fast 移动到尾部的时候，slow刚好是N节点的前一个数据，因为多了个头部需要fast多走一步，slow少走一步
 	// 这样刚好计算出倒数第N个节点的前一个节点
+	// 总长是M， fast继续走了 m-n的距离。slow，也走了m-n的距离。这个时候，slow就到了倒数第N个节点的前一个节点。
 	for fast.Next != nil {
 		fast = fast.Next
 		slow = slow.Next

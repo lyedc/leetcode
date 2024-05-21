@@ -453,6 +453,27 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	return result.Next
 }
 
+func ddd(l1 *ListNode, l2 *ListNode) *ListNode {
+	result := &ListNode{}
+	tmp := result
+	next := 0
+	for l1 != nil || l2 != nil || next != 0 {
+		total := next
+		if l1 != nil {
+			total += l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			total += l2.Val
+			l2 = l2.Next
+		}
+		tmp.Next = &ListNode{Val: total % 10}
+		tmp = tmp.Next
+		next = total / 10
+	}
+	return result.Next
+}
+
 // leetcode 19 删除链表的倒数第 N 个结点
 /*
 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点
@@ -522,6 +543,17 @@ func swapPairs(head *ListNode) *ListNode {
 		head = head.Next
 	}
 	return result.Next
+}
+
+// 采用递归的形式完成。
+func swapPairs123(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	newHead := head.Next
+	head.Next = swapPairs(newHead.Next)
+	newHead.Next = head
+	return newHead
 }
 
 // leetcode 138 复制带随机指针的链表

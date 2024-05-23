@@ -498,9 +498,28 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 
 // test
 
+func removeNthFromEnd2(head *ListNode, n int) *ListNode {
+	//result := &ListNode{Next: head}
+	// 可以不用增加一个虚拟节点.直接操作heade节点即可.
+	fast, slow := head, head
+	// 计算长度。得出前N个数据的位置
+	for i := 0; i < n; i++ {
+		fast = fast.Next
+	}
+	// fast 移动到尾部的时候，slow刚好是N节点的前一个数据，因为多了个头部需要fast多走一步，slow少走一步
+	// 这样刚好计算出倒数第N个节点的前一个节点
+	// 总长是M， fast继续走了 m-n的距离。slow，也走了m-n的距离。这个时候，slow就到了倒数第N个节点的前一个节点。
+	for fast.Next != nil {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	slow.Next = slow.Next.Next
+	return head
+}
+
 func TestRemoveNthFromEnd(t *testing.T) {
 	list := createList([]int{1, 2, 3, 4, 5})
-	printList(removeNthFromEnd(list, 2))
+	printList(removeNthFromEnd2(list, 2))
 }
 
 // leetcode 24 两两交换链表中的节点

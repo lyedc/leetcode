@@ -97,6 +97,7 @@ func longestConsecutive(nums []int) int {
 	result := 0
 	for value := range tmpMap {
 		// 判断相邻的数据是否在map中，如果存在那么就跳过这个数据了，因为在下面的循环中会判断连续的数据的。
+		// 为什么跳过减一的判断,因为左边可能是0,不便于判断.所以往后判断.
 		if tmpMap[value-1] {
 			continue
 		}

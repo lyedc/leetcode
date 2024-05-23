@@ -49,8 +49,11 @@ func subarraySum(nums []int, k int) int {
 		prefixSum += num
 		// 意味的是： prefixSum[j] - k = prefixSum[i], 那么就表示 i:j之间的数据的和为k
 		// 计算之前的前缀和，也就是  prefixSum[j] - profixSum[i] = k是否存在，j表示后面的前缀和，i表示前面的前缀和。
+		// sumMap[prefixSum-k] 表示前缀和减去k的次数后出现的其他的前缀和。
+		// 判断 preficsum -k 表示目标值是否出现了。如果出现了，出现几次，就表示有几种可能性。
 		count += sumMap[prefixSum-k]
 		// 前缀和存在次数++， 存储起来每次的前缀和
+		// 每个值中前缀和出现的次数。
 		sumMap[prefixSum]++
 	}
 
@@ -99,24 +102,31 @@ func maxSlidingWindow(nums []int, k int) []int {
 		return nil
 	}
 	result := []int{}
+	// windown中存放的是数组的下标。
 	windown := make([]int, 0)
 	for i, num := range nums {
 		// // 维护窗口，保持窗口大小为k，并且窗口中的元素单调递减
+		// 如果窗口中已经有元素，并且当前元素比窗口中最后一个元素大，则移除最后一个元素
+		// 这里遇到num大的，就会把wind中小于num的都移除
 		for len(windown) > 0 && nums[windown[len(windown)-1]] < num {
 			// 删除滑动窗口中所有比新进入的值小的值，这样保持最大的值，一直是在滑动窗口的最左侧
 			windown = windown[:len(windown)-1]
 		}
+		// 如果大于当前元素，则添加到窗口中
 		windown = append(windown, i)
 		// 当滑动窗口的左边界大于窗口长度，则移除窗口左边界的元素
 		// 也就是 i + 0 > k 表示已经出了滑动窗口了
 		// // 移除窗口左边界元素，如果它已经不在当前窗口内
 		// 表示当前的所有 j,和之前的索引i的差值，j - i = k 表示滑动窗口的长度。等于长度的时候，就要去掉最左边的。
 		// 例如：i = 2 j = 5 那么i 和 J之间已经存储了4个数字了。超过滑动窗口的长度，所以要移除最左边的。
+		//
 		if windown[0] == i-k {
 			windown = windown[1:]
 		}
 		// 表示窗口已经达到大小K，记录当前窗口的最大值
 		// 表示已经达到一个滑动窗口了，需要取出窗口中的最大值。
+		// 因为wind是一个递减的队列，所以wind[0]就是当前窗口的最大值。
+		// 这里表示已经遍历了k个元素了。因为i是循环的索引。。。。表示已经走过了一个窗口了。
 		if i >= k-1 {
 			result = append(result, nums[windown[0]])
 		}

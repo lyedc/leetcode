@@ -39,6 +39,8 @@ func moveZeroes(nums []int) {
 // 采用了左右双指针的形式移动了。
 func moveZeroes2(nums []int) {
 	left, right, n := 0, 0, len(nums)
+	// 遇到0的时候，left不移动，那么right移动一位，左右交换，这样可以当遇到0是left保持在0的位置，right
+	// 继续寻找不是0的数据，然后和left叫喊。
 	for right < n {
 		if nums[right] != 0 {
 			nums[left], nums[right] = nums[right], nums[left]
@@ -110,6 +112,7 @@ func maxArea(height []int) int {
 		if tmpAnts > ants {
 			ants = tmpAnts
 		}
+		// 那根线短，就可以先移动谁。
 		if height[left] < height[right] {
 			left++
 		} else {

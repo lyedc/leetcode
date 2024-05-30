@@ -282,17 +282,24 @@ func TestRotate(t *testing.T) {
 func productExceptSelf(nums []int) []int {
 	n := len(nums)
 	result := []int{}
+	// 初始化 left[0] 为 1，因为第一个元素左边没有元素，其左边的乘积就是 1
 	left := 1
+	leftRuesult := []int{}
+	rightResult := []int{}
 	// 先计算左边的乘积
 	for i := 0; i < n; i++ {
-		result[i] = left
+		leftRuesult[i] = left
 		left *= nums[i]
 	}
 	// 在计算右边的乘积，并乘以最终的结果。
+	// 初始化 right[n-1] 为 1，因为最后一个元素右边没有元素，其右边的乘积就是 1。
 	right := 1
 	for i := n - 1; i >= 0; i-- {
-		result[i] *= right
+		rightResult[i] = right
 		right *= nums[i]
+	}
+	for i := 0; i < n; i++ {
+		result[i] = leftRuesult[i] * rightResult[i]
 	}
 
 	return result

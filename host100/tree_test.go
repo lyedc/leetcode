@@ -92,6 +92,7 @@ func isMirror(left, right *TreeNode) bool {
 }
 
 // leetcode 102 二叉树的层次遍历
+
 func LevelOrder(root *TreeNode) [][]int {
 	result := [][]int{}
 	if root == nil {
@@ -146,6 +147,53 @@ func levelOrder2(root *TreeNode) [][]int {
 	return result
 }
 
+// TreeNode 定义二叉搜索树的节点结构
+
+// BST 定义二叉搜索树结构，根节点为私有成员
+type BST struct {
+	root *TreeNode
+}
+
+// NewBST 创建一个新的二叉搜索树
+func NewBST() *BST {
+	return &BST{}
+}
+
+// Insert 向二叉搜索树中插入一个新值
+func (bst *BST) Insert(val int) {
+	bst.root = insert(bst.root, val)
+}
+
+// insert 是 Insert 方法的辅助函数，用于递归地插入节点
+func insert(node *TreeNode, val int) *TreeNode {
+	if node == nil {
+		return &TreeNode{Val: val}
+	}
+	// 小于根节点，插入到左边，并跟node的左边进行比较
+	if val < node.Val {
+		node.Left = insert(node.Left, val)
+		// 如果大于根节点，插入到右边，并跟node的右边进行比较
+	} else if val > node.Val {
+		node.Right = insert(node.Right, val)
+	}
+	// 如果 val == node.Val，什么也不做（BST中不允许有重复元素）
+	return node
+}
+
+/*
+
+二叉搜索树（BST）是一种特殊的二叉树，其中每个节点的值都大于或等于其左子树上所有节点的值，并且小于或等于其右子树上所有节点的值。以下是二叉搜索树的一个例子：
+
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+       /  \  /
+      4   7  13
+
+*/
+
 // leetcode 108 将有序数组转换为二叉搜索树
 // 搜索二叉树的定义: 左子树的所有节点的值都小于根节点的值，右子树的所有节点的值都大于根节点的值。
 /*
@@ -185,9 +233,11 @@ func helper(root *TreeNode, min, max *int) bool {
 		return false
 	}
 	// 这里不能直接的传入nil， 一定要根节点的，根节点传入到递归函数中，所以这里应该是min和max
+	// 左边是最小值，左边的值都要小于root节点
 	if !helper(root.Left, min, &root.Val) {
 		return false
 	}
+	// 右边的都要大于root节点
 	if !helper(root.Right, &root.Val, max) {
 		return false
 	}
@@ -221,6 +271,9 @@ func isValidBSTHelper(node *TreeNode, lower, upper *int) bool {
 }
 
 // leetcode 230 二叉搜索树中第K小的元素
+/*
+二叉搜索树，左边的都小于根节点，右边都大于根节点
+*/
 func kthSmallest(root *TreeNode, k int) int {
 	var res int
 	var inorder func(node *TreeNode)
@@ -241,23 +294,31 @@ func kthSmallest(root *TreeNode, k int) int {
 }
 
 // 使用栈的方式完成
+/*
+先遍历全部的左边，然后再遍历右边。
+
+*/
 func kthSmallest2(root *TreeNode, k int) int {
 	stack := []*TreeNode{}
-	count := 0
-	for root != nil || len(stack) > 0 {
-		for root != nil {
-			stack = append(stack, root)
-			root = root.Left
+	current := root
+	for current != nil || len(stack) > 0 {
+		// 把左子树全部入栈，这样栈顶的元素就是最小的元素
+		if current != nil {
+			stack = append(stack, current)
+			current = current.Left
+		} else {
+			// 如果左边都入栈了，那么久开始比较大小了。弹出栈顶的数据就是树的左子树的小值
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			k--
+			// 达到最小的数据了，就表示找到了。因为是从tree的底部开始遍历的。
+			if k == 0 {
+				return root.Val
+			}
+			// 判断最后的左子树的右边的值，走到这里表示最小的最子树不满足，需要判断右边的数据。
+			// 到达最后的时候root=nil，但是stack不等于空，所以继续循环。这个时候就会弹出上一个节点，然后root就不是ni了。并且root.right不为nil
+			current = current.Right
 		}
-		// 弹出栈顶的数据就是树的左子树的小值
-		root = stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
-		count++
-		if count == k {
-			return root.Val
-		}
-		// 判断最后的左子树的右边的值，走到这里表示最小的最子树不满足，需要判断右边的数据。
-		root = root.Right
 	}
 	// 表示没有最小的元素
 	return 0
@@ -273,13 +334,13 @@ func kthSmallest2(root *TreeNode, k int) int {
 对于每一层，我们只保留最后一个节点的值，这就是右视图中的一个节点
 */
 func rightSideView(root *TreeNode) []int {
-	if root == nil{
+	if root == nil {
 		return nil
 	}
 	var result []int
 	// 使用队列进行bfs广度优先遍历
 	queue := []*TreeNode{root}
-	for len(queue) >0{
+	for len(queue) > 0 {
 		// 第一次表示是第一层,第一层就一个节点.遍历完第一层后,就会把第一层的叶子节点加入到队列中.
 		leveLength := len(queue)
 		for i := 0; i < leveLength; i++ {
@@ -289,14 +350,14 @@ func rightSideView(root *TreeNode) []int {
 			node := queue[0]
 			queue = queue[1:]
 			// 如果是当前层的最后一个节点,就加入到结果中
-			if i == leveLength-1{
+			if i == leveLength-1 {
 				result = append(result, node.Val)
 			}
 			// 加入第一层的叶子节点,
-			if node.Left != nil{
-				queue = append(queue,node)
+			if node.Left != nil {
+				queue = append(queue, node)
 			}
-			if node.Right != nil{
+			if node.Right != nil {
 				queue = append(queue, node.Right)
 			}
 
@@ -313,14 +374,14 @@ func rightSideView(root *TreeNode) []int {
 */
 func flatten(root *TreeNode) {
 	list := treeqianxu(root)
-	for i := 1; i< len(list); i++{
-		pre, cur := list[i -1], list[i]
+	for i := 1; i < len(list); i++ {
+		pre, cur := list[i-1], list[i]
 		pre.Left, pre.Right = nil, cur
 	}
 }
 
-func treeqianxu(root *TreeNode)[]*TreeNode{
-	if root == nil{
+func treeqianxu(root *TreeNode) []*TreeNode {
+	if root == nil {
 		return nil
 	}
 	var result []*TreeNode
@@ -332,7 +393,7 @@ func treeqianxu(root *TreeNode)[]*TreeNode{
 
 // 通过前驱节点逐步的链接,画图比较容易理解.
 
-func flatten2(root *TreeNode)  {
+func flatten2(root *TreeNode) {
 	curr := root
 	for curr != nil {
 		if curr.Left != nil {

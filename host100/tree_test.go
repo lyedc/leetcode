@@ -343,13 +343,14 @@ func rightSideView(root *TreeNode) []int {
 	for len(queue) > 0 {
 		// 第一次表示是第一层,第一层就一个节点.遍历完第一层后,就会把第一层的叶子节点加入到队列中.
 		leveLength := len(queue)
+		// 每次的一个for循环就是在循环一个层级。
 		for i := 0; i < leveLength; i++ {
 			// 队列是先进先出,弹出队列最前面的节点.第一次弹出的左边的节点,
 			//最后一个弹出的是右边的节点.
 			// 比如第二个节点,第一次弹出的是左边的节点,第二次弹出的是右边的节点.
 			node := queue[0]
 			queue = queue[1:]
-			// 如果是当前层的最后一个节点,就加入到结果中
+			// 如果是当前层的最后一个节点,就加入到结果中。因为右视图看到的是tree的最右侧的一个分支。
 			if i == leveLength-1 {
 				result = append(result, node.Val)
 			}

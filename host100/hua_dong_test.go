@@ -138,6 +138,7 @@ func findAnagrams(s string, p string) []int {
 		// 记录p字符串每个字母出现的次数，记录的是字符的ascii码
 		pCounter[p[i]]++
 	}
+	// 初始化滑动窗口的起始和结束索引，以及counter用于记录当前窗口内还需要找到的字符数。
 
 	// 开始滑动窗口的计算方案
 	start := 0
@@ -145,6 +146,8 @@ func findAnagrams(s string, p string) []int {
 	counter := len(p)
 
 	for end < len(s) {
+		// 如果当前窗口内的字符在p中出现过，则counter减一。
+
 		// 判断窗口内每个字符在p字符串出现的次数，如果大于0，说明是异位词，counter减1
 		if pCounter[s[end]] > 0 {
 			// counter 是p字符的长度，如果counter减到0，说明找到了一个异位词
@@ -152,20 +155,27 @@ func findAnagrams(s string, p string) []int {
 			counter--
 		}
 		// end位置的字符在p字符串中出现的次数减一，因为end位置的字符已经不在窗口内了
-
+		// 更新pCounter中当前字符的计数
 		pCounter[s[end]]--
 		// 开始判断字符中的第二个位置。
+		// 将end索引向右移动，扩大窗口。
 		end++
 		// 表示在一个窗口内已经比较完了。刚好是一个异位词。那么就记录结果。
 		if counter == 0 {
 			result = append(result, start)
 		}
+		// 如果窗口的长度等于p的长度，需要移动start索引，缩小窗口。
+
 		// 表示窗口内字符的数量已经达到p字符串的长度，需要移动start位置，
 		// 也就是说一个滑动窗口已经满了，需要开始滑动了。。
 		if end-start == len(p) {
+			// 如果移动start后，窗口内移除的字符在p中出现次数仍大于等于0，则counter加一。
+
 			if pCounter[s[start]] >= 0 {
 				counter++
 			}
+			// 更新pCounter中移动start索引对应的字符计数。
+			// 逆向更新计数：当窗口向右滑动时，意味着原本位于窗口内的字符s[start]现在要移出窗口。由于之前在进入窗口时我们对s[start]进行了计数减一的操作（pCounter[s[end]]--），现在它离开窗口，我们需要“回退”这一操作，即对该字符的计数进行加一，以便准确反映不在当前窗口内时该字符应统计的次数
 			pCounter[s[start]]++
 			start++
 		}

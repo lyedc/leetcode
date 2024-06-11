@@ -143,6 +143,8 @@ func merge(intervals [][]int) [][]int {
 	for i := 1; i < len(intervals); i++ {
 		// 判断后续的是否有和第一个重复的区间，如果没有重复的就直接添加到结果集中。如果存在
 		// 重复的，合并重复的区间。
+		// 取出当前结果中的最后一个数据，也是一个一维数组。然后跟要加入到结果中的数组进行比较，看是否有重合的区间，
+		// 如果重合了，就合并两个重合的部分
 		pre := merged[len(merged)-1]
 		curr := intervals[i]
 		if pre[len(pre)-1] >= curr[0] {
@@ -314,4 +316,24 @@ func TestProductExceptSelf(t *testing.T) {
 	nums = []int{-1, 1, 0, -3, 3}
 	result = productExceptSelf(nums)
 	t.Log(result)
+}
+
+func hebing(num [][]int) [][]int {
+	sort.Slice(num, func(i, j int) bool {
+		return num[i][0] < num[j][0]
+	})
+	result := [][]int{num[0]}
+	for i := 1; i < len(num); i++ {
+		// result 是一个二维数组，pre是一个一维数组
+		pre := result[len(result)-1]
+		// 相邻两个数组之间的比较
+		cur := num[i]
+		// 前一个的最后的值和当前数组的第一个值进行比较
+		if pre[len(pre)-1] > cur[0] {
+			pre[len(pre)-1] = max(pre[len(pre)-1], cur[len(cur)-1])
+		} else {
+			result = append(result, num[i])
+		}
+	}
+	return result
 }

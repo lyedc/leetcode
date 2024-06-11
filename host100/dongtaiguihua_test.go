@@ -137,6 +137,7 @@ func lengthOfLIS(nums []int) int {
 		for j := 0; j < i; j++ {
 			// 如果 nums[i] > nums[j]，则尝试更新 dp[i]
 			// 意思就是当前的数字num[i]都大于前面的每一个数字，那么就可以将dp[i]更新为dp[j]+1
+			// 这里不在意顺序。。。所以可以判断在i前面的，只要小于i就表示一个子序列
 			if nums[i] > nums[j] {
 				// dp[j] 表示以 nums[j] 结尾的最长递增子序列的长度
 				// dp[i] 取 dp[i] 和 dp[j]+1 的较大值

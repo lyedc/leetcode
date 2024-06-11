@@ -1,6 +1,7 @@
 package host100
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -140,7 +141,7 @@ func Test_maxArea123(t *testing.T) {
 
 注意：答案中不可以包含重复的三元组。
 
- 示例 1：
+	示例 1：
 
 输入：nums = [-1,0,1,2,-1,-4]
 输出：[[-1,-1,2],[-1,0,1]]
@@ -160,51 +161,26 @@ nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
 输入：nums = [0,0,0]
 输出：[[0,0,0]]
 解释：唯一可能的三元组和为 0 。
-
-
 */
-
-/* func threeSum(nums []int) [][]int {
-	// sort.Ints(nums)
-	// -1 + -1 + 2 = 0
-	// 1= -1 + 2
-	// 1 - (-1) =
-	//  把三个数之和转换成一个固定的数据和两个数之和的形式计算
-	// -1 + = 2 + -1
-	res := [][]int{}
-	for i := 0; i < len(nums)-1; i++ {
-		tmpTarget := -1 * nums[i]
-		tmpMap := make(map[int]int)
-		// tmpResult := []int{nums[i]}
-		for j := i + 1; j < len(nums)-1; j++ {
-			tmp := tmpTarget - nums[j]
-			// 找到符合的数据了，返回索引
-			if index, ok := tmpMap[tmp]; ok {
-				// 找到一组就添加到结果中。
-				res = append(res, []int{nums[i], nums[j], nums[index]})
-			}
-			tmpMap[nums[j]] = j
-		}
-
-	}
-	return res
-
-} */
-
-func treeNumber(nums []int) [][]int {
+func threeSum2(num []int) [][]int {
 	result := [][]int{}
-	numMap := make(map[int]int)
-
-	for i := 0; i < len(nums); i++ {
-		for j := i + 1; j < len(nums); j++ {
-			target := -(nums[i] + nums[j])
-			if count, ok := numMap[target]; ok && count > 0 {
-				result = append(result, []int{nums[i], nums[j], target})
-				numMap[target]--
-			}
+	if len(num) == 0 {
+		return result
+	}
+	sort.Ints(num)
+	for i := 0; i < len(num); i++ {
+		// 除去重复的值。
+		if i > 0 && num[i] == num[i-1] {
+			continue // 跳过重复的元素
 		}
-		for _, num := range nums[i+1:] {
-			numMap[num]++
+		tmpTarget := -1 * num[i]
+		tmpMap := make(map[int]int)
+		for j := i + 1; j < len(num); j++ {
+			tmp := tmpTarget - num[j]
+			if index, ok := tmpMap[tmp]; ok {
+				result = append(result, []int{num[i], num[j], num[index]})
+			}
+			tmpMap[num[j]] = j
 		}
 	}
 	return result
@@ -213,5 +189,5 @@ func treeNumber(nums []int) [][]int {
 // test
 func TestThreeSum(t *testing.T) {
 	nums := []int{-1, 0, 1, 2, -1, -4}
-	t.Log(treeNumber(nums))
+	t.Log(threeSum2(nums))
 }
